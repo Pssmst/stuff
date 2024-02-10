@@ -1,0 +1,1 @@
+Open a Youtube playlist in a full tab and copy and paste the entire playlist (from the first the last video) into `playlist.txt`

@@ -1,0 +1,27 @@
+Nº	
+Date	
+Level Preview	Level/Creator	
+Song (NG)	Difficulty	Stars/Coins/Orbs	
+Level ID
+01	21/12/16		Hollow
+By: Pauze	Omnivore - Drowning		3⭐️ 3⚪ 75🔵	26662579
+02	22/12/16		Sanctuary
+By: El3ctro1507	Envy - Sanctuary		3⭐️ 3⚪ 75🔵	16850603
+03	23/12/16		Twist
+By: Olympic	DJ-mellon - Stereo Madness (MIX)		4⭐️ 3⚪ 125🔵	26886273
+04	24/12/16		Groovy
+By: Adiale	Waterflame - BattleTown		4⭐️ 3⚪ 125🔵	18076463
+05	25/12/16		Warmth
+By: KFAOpitar	1f1n1ty - Within The Sadness		2⭐️ 3⚪ 50🔵	23356701
+06	26/12/16		Magical
+By: Skitten	Namice - Dreams		4⭐️ 3⚪ 125🔵	27505339
+07	27/12/16		Echo
+By: HaoN	bossfight - Sonder		4⭐️ 3⚪ 125🔵	27577295
+08	28/12/16		Tranquility
+By: Fillipsmen	Namice - Ripples		4⭐️ 3⚪ 125🔵	24850344
+09	29/12/16		Dusk
+By: Schady	OcularNebula - The Signalist		4⭐️ 3⚪ 125🔵	27586642
+10	30/12/16		Magnificent
+By: Berkoo	F-777 - Chinese Dance Machine 2		4⭐️ 3⚪ 125🔵	27658360
+11	31/12/16		Fancy
+By: Lebreee	Meganeko - PAE-KI		5⭐️ 3⚪ 175🔵	27706599
