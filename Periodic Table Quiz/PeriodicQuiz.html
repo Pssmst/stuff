@@ -1,0 +1,110 @@
+<!-- If you're seeing this, then you must be a very intelligent student. Tell Mrs. Jordan that Brannon Davidson said hi! -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Periodic Table Quiz</title>
+</head>
+<body>
+    <h1>Periodic Table Quiz</h1>
+    <p>Remember: If you want to try again, just refresh the page!</p>
+    <form id="quizForm">
+        <div>
+            <label for="preference">Do you want an element deleted from the list when you get it correct?</label>
+            <select id="preference" name="preference">
+                <option value="y">Yes</option>
+                <option value="n">No</option>
+            </select>
+        </div>
+        <div>
+            <label for="user">Do you want EVERY element, or just the basic ones?</label>
+            <select id="user" name="user">
+                <option value="student">Student (Recommended)</option>
+                <option value="every">EVERY ELEMENT!</option>
+            </select>
+            <br><br>
+            <button type="submit">Start Quiz</button>
+        </div>
+    </form>
+
+<!-- CLICK THE DROP DOWN ARROW NEXT TO <script> TO VIEW CODE -->
+    <script>
+        var can_continue = false;
+        var quit = false;
+        var correct_count = 0;
+        var wrong_count = 0;
+
+        function startQuiz() {
+                while (element_list.length > 0 && quit == false) {
+                    // Randomly choose question
+                    var question = Math.floor(Math.random() * 2) + 1;
+        
+                    // Randomly choose element
+                    var elementIndex = Math.floor(Math.random() * element_list.length);
+                    var element = element_list[elementIndex];
+        
+                    // Choose subsequent symbol from element
+                    var symbol = symbol_list[elementIndex];
+                    
+                    // Use your brain to figure out what this code does
+                    if (question === 1) {
+                        askQuestion(symbol, element, question, "element name of ");
+                    } else if (question === 2) {
+                        askQuestion(element, symbol, question, "element symbol for ");
+                    }
+                    // Remove element & symbol from list
+                    if (can_continue === true) {
+                        element_list.splice(elementIndex, 1);
+                        symbol_list.splice(elementIndex, 1);
+                    }
+                }
+                // End game when you run out of elements
+                var total_count = correct_count + wrong_count;
+                var percentage = (correct_count / total_count) * 100;
+                alert(`Good job! You got ${correct_count} correct and ${wrong_count} wrong. That's ${correct_count}/${total_count}, or ${percentage.toFixed(2)}%!`);
+        }
+        
+        function askQuestion(option1, option2, question, name) {
+            // Ask for either ELEMENT or SYMBOL
+            var answer = prompt("What is the " + name + option1 + "?"); 
+            
+            // Evaluate answer
+            // This line is really cool because it forces the user to enter a capitalized answer for symbols, but allows the user to not have to capitalize the element names. Aren't I so smart????
+            if ((question === 1 && answer.toLowerCase() === option2.toLowerCase()) || (question === 2 && answer === option2)) {
+                correct_count++;
+                alert("Correct!");
+            } else if (answer === null) {
+                quit = true;
+            } else {
+                wrong_count++;
+                alert("Wrong. It was " + option2 + ".");
+            }
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            var preference = document.getElementById("preference").value;
+            var user = document.getElementById("user").value;
+        
+            can_continue = preference === "y";
+            
+            // Don't tell anyone else about this... They'll start cheating!
+            // Fun fact: I typed all of this by hand :(
+            if (user === "every") {
+                element_list = ["Hydrogen", "Helium", "Lithium", "Beryllium", "Boron", "Carbon", "Nitrogen", "Oxygen", "Fluorine", "Neon", "Sodium", "Magnesium", "Aluminum", "Silicon", "Phosphorus", "Sulfur", "Chlorine", "Argon", "Potassium", "Calcium", "Scandium", "Titanium", "Vanadium", "Chromium", "Manganese", "Iron", "Cobalt", "Nickel", "Copper", "Zinc", "Gallium", "Germanium", "Arsenic", "Selenium", "Bromine", "Krypton", "Rubidium", "Strontium", "Yttrium", "Zirconium", "Niobium", "Molybdenum", "Technetium", "Ruthenium", "Rhodium", "Palladium", "Silver", "Cadmium", "Indium", "Tin", "Antimony", "Tellurium", "Iodine", "Xenon", "Cesium", "Barium", "Lanthanum", "Cerium", "Praseodymium", "Neodymium", "Promethium", "Samarium", "Europium", "Gadolinium", "Terbium", "Dysprosium", "Holmium", "Erbium", "Thulium", "Ytterbium", "Lutetium", "Hafnium", "Tantalum", "Tungsten", "Rhenium", "Osmium", "Iridium", "Platinum", "Gold", "Mercury", "Thallium", "Lead", "Bismuth", "Polonium", "Astatine", "Radon", "Francium", "Radium", "Actinium", "Thorium", "Protactinium", "Uranium", "Neptunium", "Plutonium", "Americium", "Curium", "Berkelium", "Californium", "Einsteinium", "Fermium", "Mendelevium", "Nobelium", "Lawrencium", "Rutherfordium", "Dubnium", "Seaborgium", "Bohrium", "Hassium", "Meitnerium", "Darmstadtium", "Roentgenium", "Copernicium", "Nihonium", "Flerovium", "Moscovium", "Livermorium", "Tennessine", "Oganesson"];
+            
+                symbol_list = ["H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr", "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I", "Xe", "Cs", "Ba", "La", "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra", "Ac", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "Ds", "Rg", "Cn", "Nh", "Fl", "Mc", "Lv", "Ts", "Og"];
+            
+            } else if (user === "student") {
+                element_list = ["Hydrogen", "Helium", "Lithium", "Beryllium", "Boron", "Carbon", "Nitrogen", "Oxygen", "Fluorine", "Neon", "Sodium", "Magnesium", "Aluminum", "Silicon", "Phosphorus", "Sulfur", "Chlorine", "Argon", "Potassium", "Calcium", "Scandium", "Titanium", "Vanadium", "Chromium", "Manganese", "Iron", "Cobalt", "Nickel", "Copper", "Zinc", "Bromine", "Krypton", "Rubidium", "Strontium", "Silver", "Tin", "Iodine", "Xenon", "Cesium", "Barium", "Tungsten", "Platinum", "Gold", "Mercury", "Lead", "Polonium", "Radon", "Francium", "Radium", "Uranium", "Plutonium"];
+                
+                symbol_list = ["H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Br", "Kr", "Rb", "Sr", "Ag", "Sn", "I", "Xe", "Cs", "Ba", "W", "Pt", "Au", "Hg", "Pb", "Po", "Rn", "Fr", "Ra", "U", "Pu"];
+            }
+            startQuiz();
+        }
+        document.getElementById("quizForm").addEventListener("submit", handleFormSubmit);
+    </script>
+</body>
+</html>
+
+<!-- Aannnnd that's it, folks -->
