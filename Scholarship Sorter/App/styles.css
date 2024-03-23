@@ -1,0 +1,59 @@
+body {
+    background-color: #dddddd;
+    color: #000000;
+}
+
+.top_right {
+    position: absolute;
+    top: 14px;
+    right: 12px;
+    text-align: right;
+}
+
+.above_list_container1 {
+    height: 24px;
+}
+
+.above_list_container2 {
+    height: 30px;
+    border-bottom: 2px solid #325194;
+}
+
+.fixTableHead {
+    overflow-y: auto;
+    height: calc(100vh - 72px); /* Subtract the height of the above_list_container from the viewport height */
+}
+
+.fixTableHead thead th {
+    position: sticky;
+    top: 0;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+} 
+
+th, td {
+    padding: 4px 4px;
+    border: 2px solid #323c94;
+}
+th {
+    background: #93b2ec;
+} 
+td {
+    font-size: 15px;
+}
+
+.button {
+    display: block;
+    margin: auto;
+    padding: 10px 12px;
+    border-radius: 6px;
+    border-width: 1px;
+}
+
+/* Background color for highlighted text */
+.searched_text {
+    background-color: rgb(0, 255, 255); /* You can adjust the background color as needed */
+}

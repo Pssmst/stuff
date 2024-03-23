@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholarships</title>
+    <!-- <h1>Super Scholarship Sorter</h1> -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="above_list_container1">
+        <input class="above_list" type="text" id="textbox_search" name="textbox_search">
+        <button class="above_list" onclick="search(MasterList)">Search</button>
+        <span class="above_list" id="listLengthLabel"></span>
+        
+    </div>
+    
+    <label class="top_right">© Brannon Davidson 2024<br>*Please don't search anything related to "<strong><​🇧​​🇷​></strong>", "<strong><🇸​​🇵​​🇦​​🇳></strong>", or <strong><​🇸​​🇹​​🇷​​🇴​​🇳​​🇬​></strong></label>
+
+    <div class="above_list_container2">
+        <input type="checkbox" id="accepting_applications_checkbox">
+        <label for="accepting_applications_checkbox">Accepting Applications</label>
+
+        <input type="checkbox" id="is_essay_required_checkbox">
+        <label for="is_essay_required_checkbox">Essay Not Required</label>
+
+        <input type="checkbox" id="is_need_based_checkbox">
+        <label for="is_need_based_checkbox">Not Need-Based</label>
+
+        <input type="checkbox" id="is_merit_based_checkbox">
+        <label for="is_merit_based_checkbox">Not Merit-Based</label>
+    </div>
+
+    <div class="fixTableHead">
+        <table id="myTable" border="1">
+            <!-- Table body content will be added dynamically -->
+        </table>
+    </div>
+
+    <script src="output.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
