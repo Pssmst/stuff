@@ -7,7 +7,15 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <header>© Brannon Davidson 2025</header>
+
     <div id="scheduleContainer">
+    
+        <div id="toggleScheduleButtonContainer">
+            <button class="toggleScheduleButton" onclick="openTable()">4-Year Plan</button>
+            <button class="toggleScheduleButton" onclick="openPathways()">Course Pathways</button>
+        </div>
+
         <table id="table" border="1" cellspacing="0">
 
             <tr>
@@ -101,10 +109,66 @@
                 <td id="e7c"></td>
                 <td id="e8c"></td>
             </tr>
+        </table>
 
-          </table>
+        <div id="pathwayContainer">
+            <p id="pathwayData">Pathways loaded</p>
+            <button id="decrementBtn">Decrement Pathway ID</button>
+            <button id="incrementBtn">Increment Pathway ID</button>
+
+            <div id="pathwayVisualizer">
+                <div class="column" id="0"></div>
+                <div class="column" id="1"></div>
+                <div class="column" id="2"></div>
+                <div class="column" id="3"></div>
+                <div class="column" id="4"></div>
+                <div class="column" id="5"></div>
+                <div class="column" id="6"></div>
+                <div class="column" id="7"></div>
+                <div class="column" id="8"></div>
+                <div class="column" id="9"></div>
+                <div class="column" id="10"></div>
+            </div>
+        </div>
+
+        <svg id="svg-lines"></svg>
     </div>
-    <div id="classContainer"></div>
+
+    <div id="classContainer">
+        <div id="searchContainer">
+
+            <div id="searchboxContainer">
+                <input type="text" id="searchboxNames" class="searchbox" placeholder="Search course name..." autocomplete="off">
+                <p id="searchbarResults">Course catalog loaded.</p>
+            </div>
+
+            <div id="advancedSearchContainer">
+                <div id="searchGrades">
+                    <div> <input type="checkbox" id="freshman" class="checkbox"> <label for="Freshman">Freshman</label> </div>
+                    <div> <input type="checkbox" id="sophomore" class="checkbox"> <label for="Sophomore">Sophomore</label> </div>
+                    <div> <input type="checkbox" id="junior" class="checkbox"> <label for="Junior">Junior</label> </div>
+                    <div> <input type="checkbox" id="senior" class="checkbox"> <label for="Senior">Senior</label> </div>
+                </div>
+
+                <div id="searchCredits">
+                    <div> <input type="checkbox" id="creditHalf" class="checkbox"> <label for="0.5 Credits">0.5 Credits</label> </div>
+                    <div> <input type="checkbox" id="credit1" class="checkbox"> <label for="1 Credit">1 Credit</label> </div>
+                    <div> <input type="checkbox" id="credit2" class="checkbox"> <label for="2 Credits">2 Credits</label> </div>
+                </div>
+
+                <div id="searchLevels">
+                    <div> <input type="checkbox" id="honors" class="checkbox"> <label for="Honors">Honors</label> </div>
+                    <div> <input type="checkbox" id="conc" class="checkbox"> <label for="CONC">CONC</label> </div>
+                    <div> <input type="checkbox" id="ap" class="checkbox"> <label for="AP">AP</label> </div>
+                </div>
+            </div>
+
+            <div id="visibilityButtonContainer">
+                <button class="visibilityButton" onclick="openAll()">Open All</button>
+                <button class="visibilityButton" onclick="collapseAll()">Collapse All</button>
+            </div>
+        </div>
+    </div>
     
     <script src="courses.js"></script>
     <script src="script.js"></script>
