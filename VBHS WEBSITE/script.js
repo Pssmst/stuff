@@ -1,3 +1,56 @@
+// Create a lookup map for all courses
+const courseMap = new Map();
+
+// Initialize the course map and add a postrequisites property to each course
+for (const [subject, offerings] of Object.entries(courses)) {
+    for (const [offering, coursesArray] of Object.entries(offerings)) {
+        for (const course of coursesArray) {
+            course.postrequisites = []; // Initialize postrequisites as an empty array
+            courseMap.set(course.name.trim(), course); // Store the course by its name (trimmed)
+        }
+    }
+}
+
+// Match courses with their postrequisites
+for (const [subject, offerings] of Object.entries(courses)) {
+    for (const [offering, coursesArray] of Object.entries(offerings)) {
+        for (const course of coursesArray) {
+            for (const prerequisite of course.prerequisites) {
+                const trimmedPrerequisite = prerequisite.trim();
+
+                if (courseMap.has(trimmedPrerequisite)) {
+                    const prerequisiteCourse = courseMap.get(trimmedPrerequisite);
+                    prerequisiteCourse.postrequisites.push(course.name);
+                }
+            }
+        }
+    }
+}
+
+console.log(courses, courseMap); // Testing testing 1 2 3
+
+// Setup ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function newElement(typeOfElement, parent, text, id, class1, class2) {
+    const newElement = document.createElement(typeOfElement);
+    if (text   != '') { newElement.textContent = text; }
+    if (id     != '') { newElement.id = id; }
+    if (class1 != '') { newElement.className = class1; }
+    if (class2 != '' && class2) { newElement.classList.add(class2); }
+    document.getElementById(parent).appendChild(newElement);
+}
+
+function createPrerequisiteStat(course, titleText, statText, order) {
+    newElement('div', `${course.name}_courseContainer`, titleText, 'preTitle', 'prerequisiteStat', order);
+    newElement('div', `${course.name}_courseContainer`, statText, 'preNumber', 'prerequisiteStat', order);
+}
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function toggleCollapse(id, header_id) {
     const element = document.getElementById(id);
     const header = document.getElementById(header_id);
@@ -5,31 +58,46 @@ function toggleCollapse(id, header_id) {
     if (element.style.display === 'none') {
         element.style.display = 'block';
         header.style.setProperty('--icon', '"⮟"'); // Change icon to right
-        } else {
+    } else {
         element.style.display = 'none';
         header.style.setProperty('--icon', '"➤"'); // Change icon to down
     }
 }
 
-function newElement(typeOfElement, parent, text, id, class_) {
-    const newElement = document.createElement(typeOfElement);
-    if (text   != '') { newElement.textContent = text; }
-    if (id     != '') { newElement.id = id; }
-    if (class_ != '') { newElement.className = class_; }
-    document.getElementById(parent).appendChild(newElement);
+function collapseAll() {
+    for (const [subject, offerings] of Object.entries(courses)) {
+        for (const [offering, coursesArray] of Object.entries(offerings)) {
+            document.getElementById(`${offering}_contents`).style.display = 'none';
+            document.getElementById(`${offering}_header`).style.setProperty('--icon', '"➤"');
+        }
+    }
 }
-
-function addClassToBefore(headerSelector, className) {
-    const header = document.querySelector(headerSelector);
-    if (header) {
-        header.classList.add(className);
+function openAll() {
+    for (const [subject, offerings] of Object.entries(courses)) {
+        for (const [offering, coursesArray] of Object.entries(offerings)) {
+            document.getElementById(`${offering}_contents`).style.display = 'block';
+            document.getElementById(`${offering}_header`).style.setProperty('--icon', '"⮟"');
+        }
     }
 }
 
+function openPathways() {
+    document.getElementById('table').style.display = 'none';
+    document.getElementById('pathwayContainer').style.display = 'block';
+}
+function openTable() {
+    svg.innerHTML = ''; // Clear existing lines
+    document.getElementById('pathwayContainer').style.display = 'none';
+    document.getElementById('table').style.display = 'block';
+    document.getElementById('table').style.width = '100%';
+    document.getElementById('table').style.border = '1px solid transparent';
+    document.getElementById('table').style.tableLayout = 'fixed';
+}
+
 const tableCells = document.querySelectorAll('td');
+const excludedPrerequisites = ["ACT 19 Reading", "ACT 19 Math", "ACT 19 English", "GPA 2.0", "Job Required", "Must Audition"];
 let courseContainer;
 
-// Main Iteration Logic
 for (const [subject, offerings] of Object.entries(courses)) {
     newElement('div', 'classContainer', '', subject, 'subjectContainer'); // Container for each subject (holds offerings)
     newElement('h1', subject, subject, '', 'subjectHeader'); // Heading for the subject
@@ -68,27 +136,61 @@ for (const [subject, offerings] of Object.entries(courses)) {
             const ulDetails = document.createElement('ul');
             document.getElementById(`${course.name}_courseContainer`).appendChild(ulDetails);
             
-            // Apply details ///////////////////////////////////////////////////////////////////////////////////
+            // Apply details ////////////////////////////////////////////////////////////////////////////////////
             const courseHeader = document.getElementById(`${course.name}_courseHeader`);
             let details = [];
 
             details.push(`${course.description}`);
 
-            if (course.prerequisite && course.prerequisite.length > 0) { details.push(`Prerequisite(s): ${course.prerequisite.join(', ')}`); }
+            if (course.prerequisites && course.prerequisites.length > 0) {
+
+                if (course.prerequisites.includes("ACT 19 Reading") && course.prerequisites.includes("ACT 19 Math")) {
+                    createPrerequisiteStat(course, "ACT Reading", "19+", 'ps_1');
+                    createPrerequisiteStat(course, "ACT Math", "19+", 'ps_2');
+                }
+                else if (course.prerequisites.includes("ACT 19 Reading") && course.prerequisites.includes("GPA 2.0")) {
+                    createPrerequisiteStat(course, "ACT Reading", "19+", 'ps_1');
+                    createPrerequisiteStat(course, "ACT English", "19+", 'ps_2');
+                    createPrerequisiteStat(course, "GPA", "2.0+", 'ps_3');
+                }
+                else if (course.prerequisites.includes("ACT 19 Reading")) {
+                    createPrerequisiteStat(course, "ACT Reading", "19+", 'ps_1');
+                }
+                else if (course.prerequisites.includes("Job Required")) {
+                    createPrerequisiteStat(course, "Requires", "Job", 'ps_1');
+                }
+                else if (course.prerequisites.includes("Must Audition")) {
+                    createPrerequisiteStat(course, "Must", "audition", 'ps_4');
+                }
+
+                const filteredPrerequisites = course.prerequisites.filter(item => !excludedPrerequisites.includes(item));
+                if (filteredPrerequisites.length > 0) {
+                    filteredPrerequisites
+                    details.push(`${filteredPrerequisites.length == 1 ? "Prerequisite: " : "Prerequisites: "} ${filteredPrerequisites.join(', ')}`);
+                }
+            }
+
+            if (course.postrequisites.length > 0) {
+                details.push(`Prerequisite to: ${course.postrequisites.join(', ')}`);
+            }
+
             details.push(`Credits: ${course.credits}`);
+            details.push(`Length: ${course.courseLength == 1 ? "Year" : "Semester"}`);
+            if (course.occurences > 1) {
+                details.push(`Can take ${course.occurences} times`);
+            }
 
             if (course.honors) {
-                details.push(`*Honors Course*`);
                 courseHeader.classList.add('honors');
             }
 
             if (course.advancedPlacement) {
-                details.push(`**AP Course**`);
+                details.push("Weighted on 5-point scale");
                 courseHeader.classList.add('advancedPlacement');
             }
 
             if (course.CONC) {
-                details.push(`**CONC Course through ${course.CONC}**`);
+                details.push(`Concurrent through ${course.CONC}`);
                 courseHeader.classList.add('CONC');
             }
             ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,6 +206,8 @@ for (const [subject, offerings] of Object.entries(courses)) {
         }
     }
 }
+
+// Table stuff & course selection ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function findAllowedGrades(grades) {
     let allowedGrades = [];
@@ -131,9 +235,7 @@ function checkForQualities(course, elementUnderCursor, courseContainer) {
     if (course.honors) { elementUnderCursor.classList.add('honors'); }
     if (course.advancedPlacement) { elementUnderCursor.classList.add('advancedPlacement'); }
     if (course.CONC) { elementUnderCursor.classList.add('CONC'); }
-    courseContainer.classList.add('used');
 }
-
 
 for (const [subject, offerings] of Object.entries(courses)) {
     for (const [offering, coursesArray] of Object.entries(offerings)) {
@@ -175,35 +277,50 @@ for (const [subject, offerings] of Object.entries(courses)) {
 
                 function handleDrop(e) {
                     let elementUnderCursor = document.elementFromPoint(e.clientX, e.clientY);
-
+                
                     if (
                         elementUnderCursor &&
                         elementUnderCursor.tagName === 'TD' &&
                         [subject, "Elective 1", "Elective 2", "Elective 3"].includes(getLeftmostTH(elementUnderCursor)) &&
                         findAllowedGrades(course.grades).includes(Number(elementUnderCursor.id[1]))
                     ) {
-                        if (course.credits === 1 || course.credits === 2) {
+                        // Handle previous class if it exists
+                        if (elementUnderCursor.textContent.trim()) {
+                            const previousClassName = elementUnderCursor.textContent.trim();
+                            const previousClassContainer = document.getElementById(`${previousClassName}_courseContainer`);
+                            if (previousClassContainer) {
+                                previousClassContainer.classList.remove('used');
+                            }
+                        }
+                
+                        // Place the new class
+                        if (course.courseLength === 1 || course.courseLength === 2) {
                             if (Number(elementUnderCursor.id[1]) % 2 === 0) {
                                 elementUnderCursor = elementUnderCursor.previousElementSibling;
                             }
                             const nextCell = elementUnderCursor.nextElementSibling;
-
+                
                             if (nextCell && nextCell.tagName === 'TD' && !nextCell.textContent.trim()) {
                                 elementUnderCursor.setAttribute('colspan', '2');
                                 nextCell.style.display = 'none';
                                 checkForQualities(course, elementUnderCursor, courseContainer);
-                            } else {
-                                console.log('Cannot place 1 or 2-credit course in this location');
                             }
                         } else if (!elementUnderCursor.textContent.trim()) {
                             checkForQualities(course, elementUnderCursor, courseContainer);
                         }
-                    } else {
-                        console.log("Invalid placement. Clearing unavailable cells.");
                     }
+                    // Update what is used
+                    tableCells.forEach(cell => {
+                        if (cell.textContent.trim().length > 0) {
+                            const courseContainer = document.getElementById(`${cell.textContent.trim()}_courseContainer`);
+                            if (courseContainer) {
+                                courseContainer.classList.add('used');
+                            }
+                        }
+                    });
                     cleanup();
                 }
-
+                
                 // General cleanup function
                 function cleanup() {
                     resetAvailability();
@@ -212,11 +329,6 @@ for (const [subject, offerings] of Object.entries(courses)) {
                     document.removeEventListener('mouseup', handleDrop);
                     mouseBox.remove();
                 }
-                setTimeout(() => {
-                    isMouseStationary = true;
-                    console.log('Mouse is stationary');
-                    // Your stationary logic here
-                }, 300); // Adjust the delay as needed
 
                 document.addEventListener('mousemove', moveBox);
                 document.addEventListener('click', function handleClick(event) {
@@ -251,9 +363,302 @@ tableCells.forEach(cell => {
             cell.textContent = '';
             nextCell.textContent = '';
             nextCell.style.display = '';
-        } else {
+        }
+        else {
             // Clear the content of the cell and mark it as unoccupied
             cell.textContent = ''; 
         }
     });
+});
+
+// Search bar ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+let subjectNames = [];
+let offeringNames = [];
+for (const [subject, offerings] of Object.entries(courses)) {
+    subjectNames.push(subject);
+    for (const [offering, coursesArray] of Object.entries(offerings)) {
+        offeringNames.push(offering);
+    }
+}
+
+const searchboxNames = document.getElementById('searchboxNames');
+const creditHalf = document.getElementById('creditHalf');
+const credit1 = document.getElementById('credit1');
+const credit2 = document.getElementById('credit2');
+const freshman = document.getElementById('freshman');
+const sophomore = document.getElementById('sophomore');
+const junior = document.getElementById('junior');
+const senior = document.getElementById('senior');
+const honors = document.getElementById('honors');
+const conc = document.getElementById('conc');
+const ap = document.getElementById('ap');
+
+searchboxNames.addEventListener('input', () => search());
+creditHalf.addEventListener('input', () => search());
+credit1.addEventListener('input', () => search());
+credit2.addEventListener('input', () => search());
+freshman.addEventListener('input', () => search());
+sophomore.addEventListener('input', () => search());
+junior.addEventListener('input', () => search());
+senior.addEventListener('input', () => search());
+honors.addEventListener('input', () => search());
+conc.addEventListener('input', () => search());
+ap.addEventListener('input', () => search());
+
+function search() {
+    const searchString = searchboxNames.value.trim().toLowerCase(); // Get search string
+
+    let numOfCoursesFound = 0;
+
+    // Iterate through subjects, offerings, and courses
+    for (const [subject, offerings] of Object.entries(courses)) {
+        for (const [offering, coursesArray] of Object.entries(offerings)) {
+            for (const course of coursesArray) {
+                let elementToHide = document.getElementById(`${course.name}_courseContainer`);
+                if (elementToHide) {
+
+                    // Determine if course matches name search
+                    const matchesName = (searchString === "" || course.name.toLowerCase().includes(searchString));
+
+                    // Determine if course matches credit filter
+                    const matchesCredit =
+                        (creditHalf.checked && course.credits === 0.5) ||
+                        (credit1.checked && course.credits === 1) ||
+                        (credit2.checked && course.credits === 2) ||
+                        (!creditHalf.checked && !credit1.checked && !credit2.checked);
+                    
+                    // Determine if course matches grades filter
+                    const matchesGrades =
+                        (freshman.checked && (course.grades[0] || course.grades[1])) ||
+                        (sophomore.checked && (course.grades[2] || course.grades[3])) ||
+                        (junior.checked && (course.grades[4] || course.grades[5])) ||
+                        (senior.checked && (course.grades[6] || course.grades[7])) ||
+                        (!freshman.checked && !sophomore.checked && !junior.checked && !senior.checked);
+                    
+                    // Determine if course matches level filter
+                    const matchesLevel =
+                        (honors.checked && course.honors && course.CONC == undefined && course.advancedPlacement == undefined) ||
+                        (conc.checked && course.CONC && course.CONC.length > 0) ||
+                        (ap.checked && course.advancedPlacement) ||
+                        (!honors.checked && !conc.checked && !ap.checked);
+
+                    if (matchesName && matchesCredit && matchesGrades && matchesLevel) {
+                        elementToHide.classList.remove('notDiscoveredBySearch');
+                        numOfCoursesFound++;
+                    } else {
+                        elementToHide.classList.add('notDiscoveredBySearch');
+                    }
+                }
+            }
+        }
+    }
+
+    // Update search results display
+    const resultsText = numOfCoursesFound === 1 ? "1 course found." : `${numOfCoursesFound} courses found.`;
+    document.getElementById('searchbarResults').textContent = resultsText;
+
+    // Check and update visibility for offerings and subjects
+    updateVisibility();
+}
+
+// Update visibility of offerings and subjects
+function updateVisibility() {
+    for (const offeringName of offeringNames) {
+        const offeringContainer = document.getElementById(offeringName);
+        const offeringContents = document.getElementById(`${offeringName}_contents`);
+        const courseContainers = offeringContents.querySelectorAll(':scope > div');
+
+        const allHiddenCourses = Array.from(courseContainers).every(child =>
+            child.classList.contains('notDiscoveredBySearch')
+        );
+
+        if (allHiddenCourses) {
+            offeringContainer.classList.add('notDiscoveredBySearch');
+        } else {
+            offeringContainer.classList.remove('notDiscoveredBySearch');
+        }
+    }
+
+    for (const subjectName of subjectNames) {
+        const subjectContainer = document.getElementById(subjectName);
+        const offeringContainers = subjectContainer.querySelectorAll(':scope > div');
+
+        const allHiddenOfferings = Array.from(offeringContainers).every(child =>
+            child.classList.contains('notDiscoveredBySearch')
+        );
+
+        if (allHiddenOfferings) {
+            subjectContainer.classList.add('notDiscoveredBySearch');
+        } else {
+            subjectContainer.classList.remove('notDiscoveredBySearch');
+        }
+    }
+}
+
+// Course pathways ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const svg = document.getElementById('svg-lines');
+
+// Function to remove all tile divs
+function removeAllTiles() {
+    const tiles = document.querySelectorAll('.tile');
+    tiles.forEach(tile => {
+        tile.remove();
+    });
+}
+
+// Find first possible occurrence of a class (using its available grades)
+function getFirstOccurrence(course) {
+    for (let i = 1; i <= course.grades.length; i++) {
+        if (course.grades[i - 1]) {
+            return i;
+        }
+    }
+}
+
+// Function to calculate positions and draw lines with pathway colors
+function drawLines(pathways) {
+    svg.innerHTML = ''; // Clear existing lines
+
+    // Draw each line
+    Object.values(pathways).forEach(pathway => {
+        pathway.connections.forEach(({ from, to }) => {
+            const fromElem = document.getElementById(from);
+            const toElem = document.getElementById(to);
+
+            // For line drawing...
+            const x_offset = 12;
+            const y_offset = 33;
+
+            if (fromElem && toElem) {
+                // Get bounding rectangles
+                const fromRect = fromElem.getBoundingClientRect();
+                const toRect = toElem.getBoundingClientRect();
+
+                // Calculate start and end positions
+                const x1 = fromRect.right - x_offset;
+                const y1 = fromRect.top + (fromRect.height / 2) - y_offset;
+                const x2 = toRect.left - x_offset + 1;
+                const y2 = toRect.top + (toRect.height / 2) - y_offset;
+
+                // Create an SVG line
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y1);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y2);
+
+                // Set the color for the line based on the pathway
+                line.setAttribute('stroke', pathway.color);
+                line.setAttribute('class', 'line');
+
+                // Add the line to the SVG
+                svg.appendChild(line);
+            }
+        });
+    });
+}
+
+// This is the big one
+function generatePathways(specifiedPathwayID) {
+    //console.clear()
+    const minColor = 20;
+    const maxColor = 255;
+
+    let pathways = {}; // Object to hold pathway groups and their colors
+    let pathwayID = 1; // Pathway counter for assigning unique colors
+
+    // A lazy approach to prevent duplicate courses :)
+    let previousCourses = [];
+    let currentCourses = [];
+
+    // Traverse the courses by pathways
+    for (const [subject, offerings] of Object.entries(courses)) {
+        for (const [offering, coursesArray] of Object.entries(offerings)) {
+            for (const course of coursesArray) {
+
+                const allPrerequisitesAreStats = course.prerequisites.every(stat => excludedPrerequisites.includes(stat))
+                if ((course.prerequisites.length > 0 || course.postrequisites.length > 0) && !allPrerequisitesAreStats) {
+
+                    // Start a new pathway if the course is not discovered
+                    if (!pathways[pathwayID]) {
+                        // Apply random color
+                        pathways[pathwayID] = { connections: [], color: `rgb(${getRandomInt(minColor, maxColor)}, ${getRandomInt(minColor, maxColor)}, ${getRandomInt(minColor, maxColor)})` };
+                    }
+
+                    let stack = [course.name]; // Stack is, like, a list of the branches or whatever
+                    let currentPathway = new Set(); // Track courses discovered in this pathway
+
+                    while (stack.length > 0) {
+                        let currentCourseName = stack.pop();
+                        currentCourses.push(currentCourseName);
+
+                        if (currentPathway.has(currentCourseName)) { continue; }  // Skip if the course is already in this pathway
+                        currentPathway.add(currentCourseName);                    // Add
+                        const currentCourse = courseMap.get(currentCourseName);   // Find the course object
+                        
+                        // Ensure the course tile exists (if it doesn't, make one)
+                        // THIS STUPID BLOCK OF CODE HAS BEEN THE ROOT OF MY PROBLEMS FOR 14 HOURS NOW AND I JUST FIGURED IT OUT AND I AM SO MAD
+                        if (!document.getElementById(currentCourseName)) {
+                            if (pathwayID == specifiedPathwayID || specifiedPathwayID == 0) {
+                                newElement('div', getFirstOccurrence(currentCourse), currentCourseName, currentCourseName, 'tile');
+                            }
+                        }
+
+                        // Add connections for this course
+                        for (const prerequisite of currentCourse.prerequisites) {
+                            if (!excludedPrerequisites.includes(prerequisite)) { // Gotta make sure to excldue the stat prerequisites :(
+                                pathways[pathwayID].connections.push({ from: prerequisite, to: currentCourseName });
+                                stack.push(prerequisite); // Add to stack to discover connected courses
+                            }
+                        }
+
+                        // Explore courses connected by `postrequisites`
+                        for (const postrequisites of currentCourse.postrequisites) {
+                            pathways[pathwayID].connections.push({ from: currentCourseName, to: postrequisites });
+                            stack.push(postrequisites); // Add to stack to discover connected courses
+                        }
+                    }
+
+                    // "Usually the best answer is the easiest one."
+                    //                            - GLaDOS
+                    // I DON'T KNOW WHY THIS WORKS HELP ME
+                    const allElementsFound = currentCourses.every(course => previousCourses.includes(course));
+                    //console.log(pathwayID, previousCourses, currentCourses);
+
+                    if (!allElementsFound || currentCourses[0] == previousCourses[0]) {
+                        previousCourses = currentCourses;
+                        pathwayID++;
+                    }
+                    currentCourses = [];
+                }
+            }
+        }
+    }
+
+    // Update line positions with pathway colors
+    document.getElementById("pathwayData").textContent = (specifiedPathwayID === 0 ? "All Pathways" : `Pathway ${specifiedPathwayID}` + ` of ${pathwayID}`);
+    drawLines(pathways);
+    return pathwayID;
+}
+
+let specifiedPathwayID = 1;
+let numOfPathways = generatePathways(specifiedPathwayID);
+
+// Attach event listeners to the buttons
+document.getElementById('incrementBtn').addEventListener('click', () => {
+    if (specifiedPathwayID < numOfPathways) {
+        specifiedPathwayID++;
+        removeAllTiles(); // Remove all tiles before generating new pathways
+        numOfPathways = generatePathways(specifiedPathwayID);
+    }
+});
+
+document.getElementById('decrementBtn').addEventListener('click', () => {
+    if (specifiedPathwayID > 0) { // Ensure pathway ID doesn't go below 1
+        specifiedPathwayID--;
+        removeAllTiles(); // Remove all tiles before generating new pathways
+        numOfPathways = generatePathways(specifiedPathwayID);
+    }
 });
