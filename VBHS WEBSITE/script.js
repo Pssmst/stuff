@@ -185,7 +185,7 @@ for (const [subject, offerings] of Object.entries(courses)) {
             }
 
             if (course.advancedPlacement) {
-                details.push("Weighted on 5-point scale");
+                details.push("Weighted on a 5-point scale!");
                 courseHeader.classList.add('advancedPlacement');
             }
 
